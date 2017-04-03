@@ -3,7 +3,7 @@ from pprint import pprint
 import json
 import settings
 import os
-from placeholder import placeholder_process
+
 
 from DistributionHandler import DistributionHandler
 import DistributionHandlers
@@ -13,6 +13,9 @@ import ScheduleHandlers
 
 from RetrievalHandler import RetrievalHandler
 import RetrievalHandlers
+
+from PlaceholderHandler import PlaceholderHandler
+import PlaceholderHandlers
 
 app = Celery('tasks', broker='redis://localhost')
 

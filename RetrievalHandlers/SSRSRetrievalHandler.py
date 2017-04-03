@@ -50,5 +50,7 @@ class SSRSRetrievalHandler(RetrievalHandler):
         with open(outputfile, 'wb') as f:
             for block in r.iter_content(1024):
                 f.write(block)
+            f.close()
 
         return outputfile
+

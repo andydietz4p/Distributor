@@ -1,5 +1,6 @@
+
 class RetrievalHandler():
-    def handles():
+    def handles(self):
         """returns a string indicating the type of report retrieval the subclass supports"""
         raise NotImplementedError('Subclass must implement abstract method')
 
@@ -13,17 +14,14 @@ class RetrievalHandler():
         return path
 
     def get_filename(self):
-
         GroupNumber = self.report['GROUPNUMBER']
         filename = self.report['DISTRIBUTION']['SETTINGS']['FILENAME'] + '.' + \
                    self.report['RETRIEVAL']['SETTINGS']['FORMAT']
         origfilename = filename
         from PlaceholderHandler import PlaceholderHandler
         import PlaceholderHandlers
-
         for placeholder in PlaceholderHandler.__subclasses__():
             filename = placeholder(GroupNumber).process(filename)
-        print('In Filename Generation,', origfilename, 'became', filename)
         return filename
 
     @staticmethod

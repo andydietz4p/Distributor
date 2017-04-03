@@ -9,16 +9,30 @@ class FileDistributionHandler(DistributionHandler):
     def handles():
         return "FILE"
 
+    def clean_folder(self, folderpath):
+        import os
+        import shutil
+        for i in os.walk(folderpath, topdown=False):
+            if (i[2] is not None):
+                shutil.rmtree(i[0])
+                continue
+            os.rmdir(i[0])
+        return
+
     def distribute(self, tempfile):
         import os
         import ntpath
+        import shutil
 
+        originalfilepath = ntpath.dirname(tempfile)
         newfilepath = self.report['DISTRIBUTION']['SETTINGS']['LOCATION'] + ntpath.basename(tempfile)
         if os.path.exists(newfilepath):
             os.remove(newfilepath)
-        os.rename(tempfile, newfilepath)
-        if os.path.exists(ntpath.dirname(tempfile)):
-            os.rmdir(ntpath.dirname(tempfile))
+        shutil.copy2(tempfile, newfilepath)
+        self.clean_folder(originalfilepath)
+
+        if os.path.exists(originalfilepath):
+            shutil.rmtree(originalfilepath, ignore_errors=True)
         return True
 
     @staticmethod

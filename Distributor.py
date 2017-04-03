@@ -6,7 +6,8 @@ import uuid
 import placeholder
 import settings
 
-def to_upper(dictionary):
+
+def keys_to_upper(dictionary):
     def try_iterate(k):
         return upper_by_level(k) if isinstance(k, dict) else k
 
@@ -33,10 +34,14 @@ def main():
 
         # report.update({k.upper(): v for k, v in report.items()})
 
-        finalreport = to_upper(report)
+        finalreport = keys_to_upper(report)
 
-        # ProcessReport.delay(finalreport)
-        ProcessReport(finalreport)
+        # this code enqueues the job - redis server needs to be running on localhost, and a handler needs to be running:
+
+        ProcessReport.delay(finalreport)
+
+        # this code runs the job immediately, without enqueueing it.
+        # ProcessReport.(finalreport)
 
 
 if __name__ == "__main__":
