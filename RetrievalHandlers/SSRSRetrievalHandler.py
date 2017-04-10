@@ -13,6 +13,7 @@ class SSRSRetrievalHandler(RetrievalHandler):
     @staticmethod
     def document():
         doc = {}
+        doc['HANDLERTYPE'] = 'RETRIEVAL'
         doc['SOURCE'] = 'SSRS'
         doc['SETTINGS'] = {'FORMAT': 'var_oneof:PDF|XLS|CSV', 'REPORTPATH': 'var_string',
                            'PARAMETERS': 'var_paramstring'}
@@ -29,9 +30,16 @@ class SSRSRetrievalHandler(RetrievalHandler):
         url = os.environ['SSRSURL'] + "?"
         # reportpath = "/Reporting/Monthly+Reporting/Automated/Aggregate+Minimum+Forecast"
         reportpath = self.report['RETRIEVAL']['SETTINGS']['REPORTPATH']
-        formatstring = "&rs:Format=" + self.report['RETRIEVAL']['SETTINGS']['FORMAT']
-        if 'PARAMETERS' in self.report['RETRIEVAL']['SETTINGS']:
-            parameters = self.report['RETRIEVAL']['SETTINGS']['PARAMETERS']
+        reportformat = self.report['RETRIEVAL']['SETTINGS']['FORMAT']
+        if reportformat.upper() == 'XLS':
+            reportformat = 'Excel'
+        formatstring = "&rs:Format=" + reportformat
+        if 'PARAMETERS' in self.report:
+            if 'parameters' in self.report['PARAMETERS']:
+                parameters = self.report['PARAMETERS']['parameters']
+            else:
+                parameters = {}
+
         else:
             parameters = {}
         parameters['GroupNumber'] = self.report['GROUPNUMBER']
@@ -39,7 +47,7 @@ class SSRSRetrievalHandler(RetrievalHandler):
         parameters = urllib.parse.urlencode(parameters, True)
 
         compiledurl = url + reportpath + formatstring + "&" + parameters
-
+        print(compiledurl)
         r = requests.get(compiledurl, auth=HttpNtlmAuth(os.environ['SSRSUSERNAME'], os.environ['SSRSPASSWORD']))
         outpath = self.get_outputpath()
         if not os.path.exists(outpath):

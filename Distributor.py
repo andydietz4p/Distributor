@@ -29,12 +29,12 @@ def main():
         report['schedule'] = json.loads(report['schedule'])
         report['retrieval'] = json.loads(report['retrieval'])
 
-        if report['parameters'] != '':
-            report['parameters'] = json.loads(report['parameters'])
-
         # report.update({k.upper(): v for k, v in report.items()})
-
         finalreport = keys_to_upper(report)
+        if report['parameters'] != '':
+            finalreport['PARAMETERS'] = json.loads(report['parameters'])
+
+
 
         # this code enqueues the job - redis server needs to be running on localhost, and a handler needs to be running:
 
