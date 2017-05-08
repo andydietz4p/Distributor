@@ -1,5 +1,5 @@
 from pprint import pprint
-
+from queueconfig import huey
 import json
 from tasks import ProcessReport
 import uuid
@@ -21,6 +21,7 @@ def keys_to_upper(dictionary):
 
 
 def main():
+
     reportRepository = settings.getReportRepository()
     reports = reportRepository.getAllReports()
     for report in reports:
@@ -34,11 +35,7 @@ def main():
         if report['parameters'] != '':
             finalreport['PARAMETERS'] = json.loads(report['parameters'])
 
-
-
-        # this code enqueues the job - redis server needs to be running on localhost, and a handler needs to be running:
-
-        ProcessReport.delay(finalreport)
+        ProcessReport(finalreport)
 
         # this code runs the job immediately, without enqueueing it.
         # ProcessReport.(finalreport)

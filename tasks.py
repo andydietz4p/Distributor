@@ -1,4 +1,6 @@
-from celery import Celery
+# from celery import Celery
+from queueconfig import huey
+
 from pprint import pprint
 import json
 import settings
@@ -17,10 +19,12 @@ import RetrievalHandlers
 from PlaceholderHandler import PlaceholderHandler
 import PlaceholderHandlers
 
-app = Celery('tasks', broker='redis://localhost')
+
+#app = Celery('tasks', broker='redis://localhost')
 
 
-@app.task
+
+@huey.task()
 def ProcessReport(report):
     scheduler = ScheduleHandler.factory(report)
     if not scheduler.should_run():
